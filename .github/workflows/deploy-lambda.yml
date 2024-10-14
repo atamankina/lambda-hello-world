@@ -18,7 +18,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '14'
+          node-version: '20'
 
       # Install dependencies (if any)
       - name: Install dependencies
@@ -28,15 +28,19 @@ jobs:
       - name: Zip Lambda function
         run: zip -r function.zip .
 
-      # Deploy the Lambda function to AWS
-      - name: Deploy to AWS Lambda
-        uses: aws-actions/aws-lambda-deploy@v1
+      # Set up AWS credentials with session token
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
           aws-region: ${{ secrets.AWS_REGION }}
-          function-name: hello-world-lambda
-          zip-file: function.zip
+
+      # Deploy the Lambda function using AWS CLI
+      - name: Deploy to AWS Lambda
+        run: |
+          aws lambda update-function-code --function-name hello-world-lambda --zip-file fileb://function.zip
 
   test:
     runs-on: ubuntu-latest
@@ -50,7 +54,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '14'
+          node-version: '20'
 
       # Install dependencies (if any)
       - name: Install dependencies
@@ -60,5 +64,5 @@ jobs:
       - name: Run Lambda function test
         run: |
           echo "Running Lambda function test"
-          # Here we just simulate running the lambda locally with Node.js
+          # Simulate running the lambda locally with Node.js
           node -e "const { handler } = require('./index'); handler({}, null, (err, res) => console.log(res));"
