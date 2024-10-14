@@ -1,0 +1,64 @@
+name: Deploy Lambda Function
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the latest code
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Set up Node.js environment
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      # Install dependencies (if any)
+      - name: Install dependencies
+        run: npm install
+
+      # Zip the Lambda function code
+      - name: Zip Lambda function
+        run: zip -r function.zip .
+
+      # Deploy the Lambda function to AWS
+      - name: Deploy to AWS Lambda
+        uses: aws-actions/aws-lambda-deploy@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+          function-name: hello-world-lambda
+          zip-file: function.zip
+
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the code
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Set up Node.js environment
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      # Install dependencies (if any)
+      - name: Install dependencies
+        run: npm install
+
+      # Test the Lambda function locally
+      - name: Run Lambda function test
+        run: |
+          echo "Running Lambda function test"
+          # Here we just simulate running the lambda locally with Node.js
+          node -e "const { handler } = require('./index'); handler({}, null, (err, res) => console.log(res));"

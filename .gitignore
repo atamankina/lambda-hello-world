@@ -1,0 +1,25 @@
+*/lambda-hello-world.zip
+
+# Local Terraform directories
+.terraform/
+.terraform.lock.hcl
+
+# Terraform variable files with sensitive data
+*.tfvars
+*.tfvars.json
+
+# Crash log files from Terraform
+crash.log
+
+# Exclude override files as they are usually used to override local settings
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Terraform plan files (these can be large and should not be committed)
+*.tfplan
+
+# Secrets and credentials (ensure sensitive files like these are excluded)
+.terraformrc
+terraform.rc

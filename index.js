@@ -1,13 +1,6 @@
-export const handler = async (event) => {
-    const response = {
+exports.handler = async (event) => {
+    return {
         statusCode: 200,
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            message: 'Hello, World!',
-        }),
+        body: JSON.stringify({ message: 'Hello, World!' }),
     };
-
-    return response;
 };
